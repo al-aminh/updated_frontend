@@ -1,9 +1,15 @@
+
+import 'package:checkfront/l10n/app_strings.dart';
 import 'package:checkfront/screens/about_screen.dart';
+import 'package:checkfront/screens/tutorial_screen.dart';
+import 'package:checkfront/theme/language_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../Authentication/login_screen.dart';
 import '../theme/theme_notifier.dart';
-
+import '../screens/nav_shell.dart'; // ✅ added for History navigation
 
 class AppSidebar extends StatelessWidget {
   const AppSidebar({super.key});
@@ -50,26 +56,32 @@ class AppSidebar extends StatelessWidget {
       );
     }
 
+    // Supabase user info (optional display)
+    final user = Supabase.instance.client.auth.currentUser;
+    final displayName =
+        (user?.userMetadata?['username']?.toString().trim().isNotEmpty ?? false)
+            ? user!.userMetadata!['username'].toString()
+            : (user?.email ?? "User");
+
     return Drawer(
       child: Container(
         decoration: BoxDecoration(
-          gradient:
-              isDark
-                  ? const LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Color(0xFF0A1224), Color(0xFF060B14)],
-                  )
-                  : const LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Color(0xFFF7F7FA), Color(0xFFFFFFFF)],
-                  ),
+          gradient: isDark
+              ? const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Color(0xFF0A1224), Color(0xFF060B14)],
+                )
+              : const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Color(0xFFF7F7FA), Color(0xFFFFFFFF)],
+                ),
         ),
         child: SafeArea(
           child: Column(
             children: [
-              // Header (inspired by the reference image)
+              // Header
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
                 child: Row(
@@ -88,7 +100,7 @@ class AppSidebar extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Mahbub Muhon",
+                            displayName,
                             style: TextStyle(
                               color: theme.colorScheme.onSurface,
                               fontSize: 16,
@@ -96,6 +108,14 @@ class AppSidebar extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 2),
+                          Text(
+                            user?.email ?? "",
+                            style: TextStyle(
+                              color: theme.colorScheme.onSurface.withOpacity(0.65),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -148,9 +168,42 @@ class AppSidebar extends StatelessWidget {
                                 notifier.isDarkMode
                                     ? Icons.dark_mode_rounded
                                     : Icons.light_mode_rounded,
+                                color: theme.colorScheme.onSurface.withOpacity(0.85),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      Consumer<LanguageNotifier>(
+                        builder: (context, langNotifier, _) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.surface.withOpacity(
+                                isDark ? 0.10 : 0.92,
+                              ),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
                                 color: theme.colorScheme.onSurface.withOpacity(
-                                  0.85,
+                                  isDark ? 0.10 : 0.06,
                                 ),
+                              ),
+                            ),
+                            child: SwitchListTile.adaptive(
+                              value: langNotifier.isBangla,
+                              onChanged: (_) => langNotifier.toggleLanguage(),
+                              title: Text(
+                                "বাংলা",
+                                style: TextStyle(
+                                  color: theme.colorScheme.onSurface,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              secondary: Icon(
+                                Icons.language_rounded,
+                                color: theme.colorScheme.onSurface.withOpacity(0.85),
                               ),
                             ),
                           );
@@ -173,9 +226,35 @@ class AppSidebar extends StatelessWidget {
                         ),
                         child: Column(
                           children: [
+                            // ✅ NEW: History
+                            menuItem(
+                              icon: Icons.history_rounded,
+                              title: AppStrings.history(context),
+                              onTap: () {
+                                Navigator.pop(context); // close drawer
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                    builder: (_) => const NavShell(initialIndex: 1),
+                                  ),
+                                );
+                              },
+                            ),
+
+                            menuItem(
+                              icon: Icons.school_rounded,
+                              title: AppStrings.tutorial(context),
+                              onTap: () {
+                                Navigator.pop(context);
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (_) => const TutorialScreen()),
+                                );
+                              },
+                          ),
+
+                            // About Us
                             menuItem(
                               icon: Icons.info_outline_rounded,
-                              title: "About Us",
+                              title: AppStrings.about(context),
                               onTap: () {
                                 Navigator.pop(context);
                                 Navigator.of(context).push(
@@ -200,12 +279,28 @@ class AppSidebar extends StatelessWidget {
                   width: double.infinity,
                   height: 48,
                   child: ElevatedButton.icon(
-                    onPressed: () {
-                      // TODO: hook into your auth/session logout.
-                      Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Logged out")),
-                      );
+                    onPressed: () async {
+                      try {
+                        await Supabase.instance.client.auth.signOut();
+                        if (!context.mounted) return;
+
+                        // Close drawer
+                        Navigator.pop(context);
+
+                        // Go to Login and clear stack
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const LoginScreen(),
+                          ),
+                          (route) => false,
+                        );
+                      } catch (e) {
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Logout failed: $e")),
+                        );
+                      }
                     },
                     icon: const Icon(Icons.logout_rounded),
                     label: const Text("Logout"),

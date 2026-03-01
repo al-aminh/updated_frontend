@@ -1,3 +1,4 @@
+import 'package:checkfront/l10n/app_strings.dart';
 import 'package:flutter/material.dart';
 import '../services/text_detector_service.dart';
 
@@ -77,9 +78,10 @@ class _TextDetectorScreenState extends State<TextDetectorScreen> {
       child: TextField(
         controller: controller,
         maxLines: null,
-        decoration: const InputDecoration(
+        style: const TextStyle(fontSize: 16, color: Colors.black),
+        decoration: InputDecoration(
           border: InputBorder.none,
-          hintText: "Enter Text here....",
+          hintText: AppStrings.enterText(context),
         ),
       ),
     );
@@ -96,7 +98,7 @@ class _TextDetectorScreenState extends State<TextDetectorScreen> {
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text("Check Text"),
+        title: Text(AppStrings.checkText(context)),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -123,7 +125,7 @@ class _TextDetectorScreenState extends State<TextDetectorScreen> {
                         height: 22,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : const Text("Check Ai"),
+                    : Text(AppStrings.checkAi(context)),
               ),
             ),
             const SizedBox(height: 40),

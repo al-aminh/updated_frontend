@@ -1,3 +1,4 @@
+
 import 'package:checkfront/screens/about_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -7,24 +8,30 @@ import 'home_screen.dart';
 import 'history_screen.dart';
 
 class NavShell extends StatefulWidget {
-  const NavShell({super.key});
+  final int initialIndex; // ✅ added
+  const NavShell({super.key, this.initialIndex = 0}); // ✅ added
 
   @override
   State<NavShell> createState() => _NavShellState();
 }
 
 class _NavShellState extends State<NavShell> {
-  int index = 0;
+  late int index; // ✅ changed to late
+
+  @override
+  void initState() {
+    super.initState();
+    index = widget.initialIndex; // ✅ start from drawer target
+  }
 
   AppBar _appBar(String title) {
     return AppBar(
       title: Text(title),
       leading: Builder(
-        builder:
-            (context) => IconButton(
-              icon: const Icon(Icons.menu_rounded),
-              onPressed: () => Scaffold.of(context).openDrawer(),
-            ),
+        builder: (context) => IconButton(
+          icon: const Icon(Icons.menu_rounded),
+          onPressed: () => Scaffold.of(context).openDrawer(),
+        ),
       ),
     );
   }
@@ -41,14 +48,12 @@ class _NavShellState extends State<NavShell> {
       drawer: const AppSidebar(),
       appBar: _appBarForIndex(),
 
-      // Body + Nav overlay
       body: Stack(
         children: [
           IndexedStack(
             index: index,
             children: const [HomeScreen(), HistoryScreen(), AboutScreen()],
           ),
-
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(

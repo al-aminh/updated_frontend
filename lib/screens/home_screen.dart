@@ -1,3 +1,4 @@
+import 'package:checkfront/l10n/app_strings.dart';
 import 'package:flutter/material.dart';
 import '../widgets/gradient_tile.dart';
 
@@ -31,10 +32,10 @@ class HomeScreen extends StatelessWidget {
                       colors: [Color(0xFF0B2D46), Color(0xFF3B8DBE)],
                     ),
                   ),
-                  child: const Align(
+                  child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "Your Everyday\nAi Checker :)",
+                              AppStrings.everydayChecker(context),
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 34,
@@ -55,7 +56,7 @@ class HomeScreen extends StatelessWidget {
                 childAspectRatio: 1.05,
                 children: [
                   GradientTile(
-                    title: "Check Text",
+                    title: AppStrings.checkText(context),
                     icon: Icons.description_rounded,
                     gradient: const LinearGradient(
                       begin: Alignment.topLeft,
@@ -68,7 +69,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   GradientTile(
-                    title: "Check Image",
+                    title: AppStrings.checkImage(context),
                     icon: Icons.image_rounded,
                     gradient: const LinearGradient(
                       begin: Alignment.topLeft,
@@ -81,7 +82,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   GradientTile(
-                    title: "Check Video",
+                    title: AppStrings.checkVideo(context),
                     icon: Icons.ondemand_video_rounded,
                     gradient: const LinearGradient(
                       begin: Alignment.topLeft,
@@ -94,7 +95,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   GradientTile(
-                    title: "Check Audio",
+                    title: AppStrings.checkAudio(context),
                     icon: Icons.multitrack_audio_rounded,
                     gradient: const LinearGradient(
                       begin: Alignment.topLeft,

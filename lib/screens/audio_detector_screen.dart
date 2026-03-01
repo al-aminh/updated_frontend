@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:checkfront/l10n/app_strings.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -135,7 +136,7 @@ class _AudioDetectorScreenState extends State<AudioDetectorScreen> {
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text("Check Audio"),
+        title: Text(AppStrings.checkAudio(context)),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -162,7 +163,7 @@ class _AudioDetectorScreenState extends State<AudioDetectorScreen> {
                         height: 22,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : const Text("Check Ai"),
+                    :  Text(AppStrings.checkAi(context)),
               ),
             ),
             const SizedBox(height: 40),
