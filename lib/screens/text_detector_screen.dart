@@ -31,36 +31,6 @@ class _TextDetectorScreenState extends State<TextDetectorScreen> {
   Color get barColor => const Color(0xFF16A34A);
   Color get buttonColor => const Color(0xFF2EC653);
 
-  // Future<void> _detect() async {
-  //   final text = controller.text.trim();
-  //   if (text.isEmpty) return;
-
-  //   setState(() {
-  //     loading = true;
-  //     showResult = false;
-  //     verdict = '';
-  //     percent = 0;
-  //   });
-
-  //   try {
-  //     final res = await service.detect(text);
-
-  //     final aiProb = (res['ai_probability'] as num).toDouble();
-  //     final v = (res['verdict'] ?? '').toString();
-
-  //     setState(() {
-  //       percent = (aiProb * 100).round();
-  //       verdict = v;
-  //       showResult = true;
-  //     });
-  //   } catch (e, st) {
-  //     debugPrint("TEXT DETECT ERROR: $e");
-  //     debugPrint("$st");
-  //     _showError(e.toString());
-  //   } finally {
-  //     if (mounted) setState(() => loading = false);
-  //   }
-  // }
 
   Future<void> _detect() async {
   final text = controller.text.trim();
@@ -68,7 +38,7 @@ class _TextDetectorScreenState extends State<TextDetectorScreen> {
 
   const cost = 30;
 
-  // 1️⃣ Check if user has enough tokens FIRST
+
   final tokenProvider = context.read<TokenNotifier>();
 
   if (!tokenProvider.canSpend(cost)) {
@@ -88,13 +58,13 @@ class _TextDetectorScreenState extends State<TextDetectorScreen> {
   });
 
   try {
-    // 2️⃣ Call API FIRST
+    
     final res = await service.detect(text);
 
     final aiProb = (res['ai_probability'] as num).toDouble();
     final v = (res['verdict'] ?? '').toString();
 
-    // 3️⃣ Only after success → deduct tokens
+
     await tokenProvider.spend(cost);
 
     setState(() {

@@ -66,7 +66,7 @@ class CheckAiApp extends StatelessWidget {
   }
 }
 
-/// Shows NavShell if logged in, otherwise LoginScreen.
+
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
 
@@ -79,7 +79,7 @@ class AuthGate extends StatelessWidget {
       builder: (context, snapshot) {
         final session = supabase.auth.currentSession;
 
-        // While auth stream initializes, show a small loader
+        
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
@@ -87,10 +87,10 @@ class AuthGate extends StatelessWidget {
         }
 
         if (session != null) {
-          return const NavShell(); // ✅ your existing home (tabs/shell)
+          return const NavShell(); 
         }
 
-        return const LoginScreen(); // ✅ login/register flow
+        return const LoginScreen(); 
       },
     );
   }

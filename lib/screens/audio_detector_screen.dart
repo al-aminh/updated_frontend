@@ -36,13 +36,13 @@ class _AudioDetectorScreenState extends State<AudioDetectorScreen> {
       type: FileType.custom,
       allowedExtensions: const ['mp3', 'wav', 'm4a', 'aac', 'ogg'],
       allowMultiple: false,
-      withData: kIsWeb, // ✅ required for web
+      withData: kIsWeb, 
     );
     if (picked == null) return;
 
     final f = picked.files.single;
 
-    // ✅ mime detection without PlatformFile.mimeType (works with your file_picker version)
+    
     final detectedMime = lookupMimeType(f.name) ?? 'audio/mpeg';
 
     final media = PickedMedia(
@@ -60,39 +60,6 @@ class _AudioDetectorScreenState extends State<AudioDetectorScreen> {
     });
   }
 
-  // Future<void> _detect() async {
-  //   if (selected == null) {
-  //     _showError("Please upload an audio file first.");
-  //     return;
-  //   }
-
-  //   setState(() {
-  //     loading = true;
-  //     showResult = false;
-  //     verdict = '';
-  //     percent = 0;
-  //   });
-
-  //   try {
-  //     final res = await service.detect(selected!);
-
-  //     final fakeProb = (res['fake_probability'] as num).toDouble();
-  //     final v = (res['verdict'] ?? '').toString();
-
-  //     setState(() {
-  //       percent = (fakeProb * 100).round();
-  //       verdict = v;
-  //       showResult = true;
-  //     });
-  //   } catch (e, st) {
-  //     debugPrint("AUDIO DETECT ERROR: $e");
-  //     debugPrint("$st");
-  //     _showError(e.toString());
-  //   } finally {
-  //     if (mounted) setState(() => loading = false);
-  //   }
-  // }
-
 Future<void> _detect() async {
   if (selected == null) {
     _showError("Please upload an audio file first.");
@@ -101,7 +68,7 @@ Future<void> _detect() async {
 
   const cost = 50;
 
-  // 1️⃣ Check if user has enough tokens
+  
   final tokenProvider = context.read<TokenNotifier>();
   if (!tokenProvider.canSpend(cost)) {
     if (!mounted) return;
@@ -120,13 +87,13 @@ Future<void> _detect() async {
   });
 
   try {
-    // 2️⃣ Call API first
+    
     final res = await service.detect(selected!);
 
     final fakeProb = (res['fake_probability'] as num).toDouble();
     final v = (res['verdict'] ?? '').toString();
 
-    // 3️⃣ Deduct tokens ONLY after success
+    
     await tokenProvider.spend(cost);
 
     setState(() {

@@ -4,7 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 class PersonInfo {
   final String name;
   final String title;
-  final String? photoAsset; // optional (network image)
+  final String? photoAsset; 
   final String? githubUrl;
   final String? linkedinUrl;
   final String? facebookUrl;
@@ -83,7 +83,7 @@ class AboutUsContent extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        // Supervisor card dark-yellow background
+        
         color:
             isSupervisor
                 ? const Color(0xFFB8860B).withOpacity(isDark ? 0.35 : 0.55)
@@ -151,7 +151,7 @@ class AboutUsContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // NOTE: Replace social links and photoUrl with real ones when you have them.
+    
     const developers = <PersonInfo>[
       PersonInfo(
         name: "Mahbub Muhon",

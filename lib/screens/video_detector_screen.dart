@@ -37,7 +37,7 @@ class _VideoDetectorScreenState extends State<VideoDetectorScreen> {
     final picked = await FilePicker.platform.pickFiles(
       type: FileType.video,
       allowMultiple: false,
-      withData: kIsWeb, // ✅ Web needs bytes
+      withData: kIsWeb, 
     );
     if (picked == null) return;
 
@@ -61,42 +61,6 @@ class _VideoDetectorScreenState extends State<VideoDetectorScreen> {
     });
   }
 
-  // Future<void> _detect() async {
-  //   if (selected == null) {
-  //     _showError("Please upload a video first.");
-  //     return;
-  //   }
-
-  //   setState(() {
-  //     loading = true;
-  //     showResult = false;
-  //     verdict = '';
-  //     percent = 0;
-  //     framesAnalyzed = 0;
-  //   });
-
-  //   try {
-  //     final res = await service.detect(selected!);
-
-  //     final fakeProb = (res['fake_probability'] as num).toDouble();
-  //     final v = (res['verdict'] ?? '').toString();
-  //     final frames = (res['frames_analyzed'] as num?)?.toInt() ?? 0;
-
-  //     setState(() {
-  //       percent = (fakeProb * 100).round();
-  //       verdict = v;
-  //       framesAnalyzed = frames;
-  //       showResult = true;
-  //     });
-  //   } catch (e, st) {
-  //     debugPrint("VIDEO DETECT ERROR: $e");
-  //     debugPrint("$st");
-  //     _showError(e.toString());
-  //   } finally {
-  //     if (mounted) setState(() => loading = false);
-  //   }
-  // }
-
 Future<void> _detect() async {
   if (selected == null) {
     _showError("Please upload a video first.");
@@ -105,7 +69,7 @@ Future<void> _detect() async {
 
   const cost = 70;
 
-  // 1) Check tokens before API call
+
   final tokenProvider = context.read<TokenNotifier>();
   if (!tokenProvider.canSpend(cost)) {
     if (!mounted) return;
@@ -125,14 +89,14 @@ Future<void> _detect() async {
   });
 
   try {
-    // 2) Call API first
+
     final res = await service.detect(selected!);
 
     final fakeProb = (res['fake_probability'] as num).toDouble();
     final v = (res['verdict'] ?? '').toString();
     final frames = (res['frames_analyzed'] as num?)?.toInt() ?? 0;
 
-    // 3) Deduct tokens only after success
+
     await tokenProvider.spend(cost);
 
     setState(() {

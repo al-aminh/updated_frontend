@@ -8,20 +8,20 @@ import 'home_screen.dart';
 import 'history_screen.dart';
 
 class NavShell extends StatefulWidget {
-  final int initialIndex; // ✅ added
-  const NavShell({super.key, this.initialIndex = 0}); // ✅ added
+  final int initialIndex;
+  const NavShell({super.key, this.initialIndex = 0}); 
 
   @override
   State<NavShell> createState() => _NavShellState();
 }
 
 class _NavShellState extends State<NavShell> {
-  late int index; // ✅ changed to late
+  late int index; 
 
   @override
   void initState() {
     super.initState();
-    index = widget.initialIndex; // ✅ start from drawer target
+    index = widget.initialIndex; 
   }
 
   AppBar _appBar(String title) {

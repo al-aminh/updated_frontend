@@ -10,7 +10,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../Authentication/login_screen.dart';
 import '../theme/theme_notifier.dart';
-import '../screens/nav_shell.dart'; // ✅ added for History navigation
+import '../screens/nav_shell.dart'; 
 
 class AppSidebar extends StatelessWidget {
   const AppSidebar({super.key});
@@ -57,7 +57,7 @@ class AppSidebar extends StatelessWidget {
       );
     }
 
-    // Supabase user info (optional display)
+   
     final user = Supabase.instance.client.auth.currentUser;
     final displayName =
         (user?.userMetadata?['username']?.toString().trim().isNotEmpty ?? false)
@@ -227,7 +227,7 @@ class AppSidebar extends StatelessWidget {
                         ),
                         child: Column(
                           children: [
-                            // ✅ NEW: History
+                            
                             menuItem(
                               icon: Icons.history_rounded,
                               title: AppStrings.history(context),
@@ -252,7 +252,7 @@ class AppSidebar extends StatelessWidget {
                               },
                           ),
 
-                            // About Us
+                            
                           menuItem(
                               icon: Icons.info_outline_rounded,
                               title: AppStrings.about(context),
@@ -284,7 +284,7 @@ class AppSidebar extends StatelessWidget {
                 ),
               ),
 
-              // Logout button (red)
+              
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
                 child: SizedBox(
@@ -296,7 +296,7 @@ class AppSidebar extends StatelessWidget {
                         await Supabase.instance.client.auth.signOut();
                         if (!context.mounted) return;
 
-                        // Close drawer
+                        
                         Navigator.pop(context);
 
                         // Go to Login and clear stack

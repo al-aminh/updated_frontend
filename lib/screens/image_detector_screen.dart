@@ -59,39 +59,6 @@ class _ImageDetectorScreenState extends State<ImageDetectorScreen> {
     });
   }
 
-  // Future<void> _detect() async {
-  //   if (selected == null) {
-  //     _showError("Please upload an image first.");
-  //     return;
-  //   }
-
-  //   setState(() {
-  //     loading = true;
-  //     showResult = false;
-  //     verdict = '';
-  //     percent = 0;
-  //   });
-
-  //   try {
-  //     final res = await service.detect(selected!);
-
-  //     final fakeProb = (res['fake_probability'] as num).toDouble();
-  //     final v = (res['verdict'] ?? '').toString();
-
-  //     setState(() {
-  //       percent = (fakeProb * 100).round();
-  //       verdict = v;
-  //       showResult = true;
-  //     });
-  //   } catch (e, st) {
-  //     debugPrint("IMAGE DETECT ERROR: $e");
-  //     debugPrint("$st");
-  //     _showError(e.toString());
-  //   } finally {
-  //     if (mounted) setState(() => loading = false);
-  //   }
-  // }
-
   Future<void> _detect() async {
   if (selected == null) {
     _showError("Please upload an image first.");
@@ -100,7 +67,7 @@ class _ImageDetectorScreenState extends State<ImageDetectorScreen> {
 
   const cost = 60;
 
-  // 1) Check tokens before API call
+  
   final tokenProvider = context.read<TokenNotifier>();
   if (!tokenProvider.canSpend(cost)) {
     if (!mounted) return;
@@ -119,13 +86,13 @@ class _ImageDetectorScreenState extends State<ImageDetectorScreen> {
   });
 
   try {
-    // 2) Call API first
+    
     final res = await service.detect(selected!);
 
     final fakeProb = (res['fake_probability'] as num).toDouble();
     final v = (res['verdict'] ?? '').toString();
 
-    // 3) Deduct tokens only after success
+    
     await tokenProvider.spend(cost);
 
     setState(() {

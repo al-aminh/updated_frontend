@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../theme/token_notifier.dart';
+
+import 'package:url_launcher/url_launcher.dart';
+
 
 class OutOfTokensScreen extends StatelessWidget {
   const OutOfTokensScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    const String paypalUrl =
+      "https://www.paypal.com/invoice/p/#44QE7K9YFD3MC5B8";
 
     return Scaffold(
       appBar: AppBar(
@@ -49,17 +51,33 @@ class OutOfTokensScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 18),
 
-                // UI only: Reset button (optional for testing)
+                
                 SizedBox(
                   width: double.infinity,
                   height: 48,
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      await context.read<TokenNotifier>().reset();
-                      if (context.mounted) Navigator.pop(context);
-                    },
-                    child: const Text("Reset Tokens (UI only)"),
-                  ),
+                  child: ElevatedButton.icon(
+                      onPressed: () async {
+                        final uri = Uri.parse(paypalUrl);
+                        if (await canLaunchUrl(uri)) {
+                          await launchUrl(
+                            uri,
+                            mode: LaunchMode.externalApplication,
+                          );
+                        }
+                      },
+                      icon: const Icon(
+                                Icons.shopping_cart_rounded,
+                                color: Colors.white,
+                                      ),
+                      label: const Text("Buy More Tokens", style: TextStyle(color: Colors.white),),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromRGBO(0, 0, 255, 1),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          
+                        ),
+                      ),
+                    ),
                 ),
               ],
             ),

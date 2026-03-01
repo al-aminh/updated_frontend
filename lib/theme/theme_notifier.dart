@@ -11,7 +11,7 @@ class ThemeNotifier extends ChangeNotifier {
 
   Future<void> loadFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
-    _isDarkMode = prefs.getBool(_prefKey) ?? true; // default dark (matches current app)
+    _isDarkMode = prefs.getBool(_prefKey) ?? true; 
     notifyListeners();
   }
 
