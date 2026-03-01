@@ -1,4 +1,5 @@
 import 'package:checkfront/theme/language_notifier.dart';
+import 'package:checkfront/theme/token_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -24,7 +25,8 @@ Future<void> main() async {
       MultiProvider(
         providers: [
           ChangeNotifierProvider.value(value: themeNotifier),
-          ChangeNotifierProvider(create: (_) => LanguageNotifier()), // ✅ add this
+          ChangeNotifierProvider(create: (_) => LanguageNotifier()),
+          ChangeNotifierProvider(create: (_) => TokenNotifier()), 
         ],
         child: const CheckAiApp(),
       ),

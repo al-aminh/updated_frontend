@@ -1,6 +1,9 @@
 import 'package:checkfront/l10n/app_strings.dart';
+import 'package:checkfront/screens/out_of_tokens_screen.dart';
+import 'package:checkfront/theme/token_notifier.dart';
 import 'package:flutter/material.dart';
 import '../services/text_detector_service.dart';
+import 'package:provider/provider.dart';
 
 class TextDetectorScreen extends StatefulWidget {
   const TextDetectorScreen({super.key});
@@ -28,36 +31,86 @@ class _TextDetectorScreenState extends State<TextDetectorScreen> {
   Color get barColor => const Color(0xFF16A34A);
   Color get buttonColor => const Color(0xFF2EC653);
 
+  // Future<void> _detect() async {
+  //   final text = controller.text.trim();
+  //   if (text.isEmpty) return;
+
+  //   setState(() {
+  //     loading = true;
+  //     showResult = false;
+  //     verdict = '';
+  //     percent = 0;
+  //   });
+
+  //   try {
+  //     final res = await service.detect(text);
+
+  //     final aiProb = (res['ai_probability'] as num).toDouble();
+  //     final v = (res['verdict'] ?? '').toString();
+
+  //     setState(() {
+  //       percent = (aiProb * 100).round();
+  //       verdict = v;
+  //       showResult = true;
+  //     });
+  //   } catch (e, st) {
+  //     debugPrint("TEXT DETECT ERROR: $e");
+  //     debugPrint("$st");
+  //     _showError(e.toString());
+  //   } finally {
+  //     if (mounted) setState(() => loading = false);
+  //   }
+  // }
+
   Future<void> _detect() async {
-    final text = controller.text.trim();
-    if (text.isEmpty) return;
+  final text = controller.text.trim();
+  if (text.isEmpty) return;
+
+  const cost = 30;
+
+  // 1️⃣ Check if user has enough tokens FIRST
+  final tokenProvider = context.read<TokenNotifier>();
+
+  if (!tokenProvider.canSpend(cost)) {
+    if (!mounted) return;
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const OutOfTokensScreen()),
+    );
+    return;
+  }
+
+  setState(() {
+    loading = true;
+    showResult = false;
+    verdict = '';
+    percent = 0;
+  });
+
+  try {
+    // 2️⃣ Call API FIRST
+    final res = await service.detect(text);
+
+    final aiProb = (res['ai_probability'] as num).toDouble();
+    final v = (res['verdict'] ?? '').toString();
+
+    // 3️⃣ Only after success → deduct tokens
+    await tokenProvider.spend(cost);
 
     setState(() {
-      loading = true;
-      showResult = false;
-      verdict = '';
-      percent = 0;
+      percent = (aiProb * 100).round();
+      verdict = v;
+      showResult = true;
     });
 
-    try {
-      final res = await service.detect(text);
-
-      final aiProb = (res['ai_probability'] as num).toDouble();
-      final v = (res['verdict'] ?? '').toString();
-
-      setState(() {
-        percent = (aiProb * 100).round();
-        verdict = v;
-        showResult = true;
-      });
-    } catch (e, st) {
-      debugPrint("TEXT DETECT ERROR: $e");
-      debugPrint("$st");
-      _showError(e.toString());
-    } finally {
-      if (mounted) setState(() => loading = false);
-    }
+  } catch (e, st) {
+    debugPrint("TEXT DETECT ERROR: $e");
+    debugPrint("$st");
+    _showError(e.toString());
+  } finally {
+    if (mounted) setState(() => loading = false);
   }
+}
 
   void _showError(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(

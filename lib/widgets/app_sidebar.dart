@@ -1,6 +1,7 @@
 
 import 'package:checkfront/l10n/app_strings.dart';
 import 'package:checkfront/screens/about_screen.dart';
+import 'package:checkfront/screens/token_screen.dart';
 import 'package:checkfront/screens/tutorial_screen.dart';
 import 'package:checkfront/theme/language_notifier.dart';
 import 'package:flutter/material.dart';
@@ -252,7 +253,7 @@ class AppSidebar extends StatelessWidget {
                           ),
 
                             // About Us
-                            menuItem(
+                          menuItem(
                               icon: Icons.info_outline_rounded,
                               title: AppStrings.about(context),
                               onTap: () {
@@ -264,6 +265,17 @@ class AppSidebar extends StatelessWidget {
                                 );
                               },
                             ),
+
+                          menuItem(
+                            icon: Icons.confirmation_number_rounded,
+                            title: "Tokens", // later we can translate too
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.of(context).push(
+                                MaterialPageRoute(builder: (_) => const TokenScreen()),
+                              );
+                            },
+                          ),
                           ],
                         ),
                       ),

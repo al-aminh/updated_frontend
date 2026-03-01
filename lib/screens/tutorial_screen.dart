@@ -1,5 +1,7 @@
 import 'package:checkfront/l10n/app_strings.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TutorialScreen extends StatelessWidget {
   const TutorialScreen({super.key});
@@ -62,13 +64,6 @@ class TutorialScreen extends StatelessWidget {
       );
     }
 
-    void dummyOpen(String which) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("$which tutorial link will be added later."),
-        ),
-      );
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -116,25 +111,25 @@ class TutorialScreen extends StatelessWidget {
             tutorialTile(
               title: AppStrings.textTutorial(context),
               icon: Icons.description_rounded,
-              onTap: () => dummyOpen("Text Detector"),
+              onTap: () => launchUrl(Uri.parse("https://drive.google.com/drive/folders/1WSaisuK8nR0EUx15xIVZVM_mYKn49Ld9?usp=drive_link"), mode: LaunchMode.externalApplication),
             ),
             const SizedBox(height: 12),
             tutorialTile(
               title: AppStrings.imageTutorial(context),
               icon: Icons.image_rounded,
-              onTap: () => dummyOpen("Image Detector"),
+              onTap: () => launchUrl(Uri.parse("https://drive.google.com/drive/folders/1WSaisuK8nR0EUx15xIVZVM_mYKn49Ld9?usp=drive_link"), mode: LaunchMode.externalApplication),
             ),
             const SizedBox(height: 12),
             tutorialTile(
               title: AppStrings.videoTutorial(context),
               icon: Icons.ondemand_video_rounded,
-              onTap: () => dummyOpen("Video Detector"),
+              onTap: () => launchUrl(Uri.parse("https://drive.google.com/drive/folders/1WSaisuK8nR0EUx15xIVZVM_mYKn49Ld9?usp=drive_link"), mode: LaunchMode.externalApplication),
             ),
             const SizedBox(height: 12),
             tutorialTile(
               title: AppStrings.audioTutorial(context),
               icon: Icons.multitrack_audio_rounded,
-              onTap: () => dummyOpen("Audio Detector"),
+              onTap: () => launchUrl(Uri.parse("https://drive.google.com/drive/folders/1WSaisuK8nR0EUx15xIVZVM_mYKn49Ld9?usp=drive_link"), mode: LaunchMode.externalApplication),
             ),
           ],
         ),

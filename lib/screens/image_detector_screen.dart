@@ -1,10 +1,13 @@
 
 import 'dart:io';
 import 'package:checkfront/l10n/app_strings.dart';
+import 'package:checkfront/screens/out_of_tokens_screen.dart';
+import 'package:checkfront/theme/token_notifier.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mime/mime.dart';
+import 'package:provider/provider.dart';
 
 import '../models/picked_media.dart';
 import '../services/image_detector_service.dart';
@@ -56,38 +59,88 @@ class _ImageDetectorScreenState extends State<ImageDetectorScreen> {
     });
   }
 
+  // Future<void> _detect() async {
+  //   if (selected == null) {
+  //     _showError("Please upload an image first.");
+  //     return;
+  //   }
+
+  //   setState(() {
+  //     loading = true;
+  //     showResult = false;
+  //     verdict = '';
+  //     percent = 0;
+  //   });
+
+  //   try {
+  //     final res = await service.detect(selected!);
+
+  //     final fakeProb = (res['fake_probability'] as num).toDouble();
+  //     final v = (res['verdict'] ?? '').toString();
+
+  //     setState(() {
+  //       percent = (fakeProb * 100).round();
+  //       verdict = v;
+  //       showResult = true;
+  //     });
+  //   } catch (e, st) {
+  //     debugPrint("IMAGE DETECT ERROR: $e");
+  //     debugPrint("$st");
+  //     _showError(e.toString());
+  //   } finally {
+  //     if (mounted) setState(() => loading = false);
+  //   }
+  // }
+
   Future<void> _detect() async {
-    if (selected == null) {
-      _showError("Please upload an image first.");
-      return;
-    }
+  if (selected == null) {
+    _showError("Please upload an image first.");
+    return;
+  }
+
+  const cost = 60;
+
+  // 1) Check tokens before API call
+  final tokenProvider = context.read<TokenNotifier>();
+  if (!tokenProvider.canSpend(cost)) {
+    if (!mounted) return;
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const OutOfTokensScreen()),
+    );
+    return;
+  }
+
+  setState(() {
+    loading = true;
+    showResult = false;
+    verdict = '';
+    percent = 0;
+  });
+
+  try {
+    // 2) Call API first
+    final res = await service.detect(selected!);
+
+    final fakeProb = (res['fake_probability'] as num).toDouble();
+    final v = (res['verdict'] ?? '').toString();
+
+    // 3) Deduct tokens only after success
+    await tokenProvider.spend(cost);
 
     setState(() {
-      loading = true;
-      showResult = false;
-      verdict = '';
-      percent = 0;
+      percent = (fakeProb * 100).round();
+      verdict = v;
+      showResult = true;
     });
-
-    try {
-      final res = await service.detect(selected!);
-
-      final fakeProb = (res['fake_probability'] as num).toDouble();
-      final v = (res['verdict'] ?? '').toString();
-
-      setState(() {
-        percent = (fakeProb * 100).round();
-        verdict = v;
-        showResult = true;
-      });
-    } catch (e, st) {
-      debugPrint("IMAGE DETECT ERROR: $e");
-      debugPrint("$st");
-      _showError(e.toString());
-    } finally {
-      if (mounted) setState(() => loading = false);
-    }
+  } catch (e, st) {
+    debugPrint("IMAGE DETECT ERROR: $e");
+    debugPrint("$st");
+    _showError(e.toString());
+  } finally {
+    if (mounted) setState(() => loading = false);
   }
+}
 
   void _showError(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
