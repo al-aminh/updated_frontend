@@ -63,6 +63,8 @@ static String audioTutorial(BuildContext context) =>
     _isBn(context)
         ? "অডিও ডিটেক্টর টিউটোরিয়াল"
         : "Audio Detector Tutorial";
+static String tokens(BuildContext context) =>
+    _isBn(context) ? "টোকেন" : "Tokens";
 
   static bool _isBn(BuildContext context) =>
       Localizations.localeOf(context).languageCode == 'bn';

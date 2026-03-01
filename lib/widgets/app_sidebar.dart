@@ -268,7 +268,7 @@ class AppSidebar extends StatelessWidget {
 
                           menuItem(
                             icon: Icons.confirmation_number_rounded,
-                            title: "Tokens", // later we can translate too
+                            title: AppStrings.tokens(context), // later we can translate too
                             onTap: () {
                               Navigator.pop(context);
                               Navigator.of(context).push(
